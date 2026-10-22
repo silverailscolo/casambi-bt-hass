@@ -160,13 +160,16 @@ class CasambiUnitEntity(CasambiEntity, metaclass=ABCMeta):
     def device_info(self) -> DeviceInfo:
         """Return specific device information."""
         unit = cast("CasambiUnit", self._obj)
+        via_device_id = device_registry.async_get_device_id_by_identifier(
+            self._api.hass, (DOMAIN, self._api.casa.networkId), config_entry_id=self._api.conf_entry.entry_id
+        )
         return DeviceInfo(
             name=unit.name,
             manufacturer=unit.unitType.manufacturer,
             model=unit.unitType.model,
             sw_version=unit.firmwareVersion,
             identifiers={(DOMAIN, unit.uuid)},
-            via_device=(DOMAIN, self._api.casa.networkId),
+            via_device_id=via_device_id,
         )
 
     @property
